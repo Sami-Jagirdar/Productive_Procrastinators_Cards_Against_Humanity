@@ -1,3 +1,4 @@
+from os import read
 from random import randint
 import pickle
 import time 
@@ -75,11 +76,13 @@ if __name__ == "__main__":
         #level1 = input("Invalid Input: Type 1 to play, type 2 for settings, or type 3 to exit: ")
     theme_name_list = []
     theme_list =[]
-    write_theme_file = open("newtheme.pickle", "wb") 
-    pickle.dump(theme_list, write_theme_file)
-    write_theme_file.close()
     read_theme_file = open("newtheme.pickle","rb")
     theme_list = pickle.load(read_theme_file)
+    read_theme_file.close()
+    # empty_list = []
+    # write_theme_file = open("newtheme.pickle","wb")
+    # pickle.dump(empty_list,write_theme_file)
+    # write_theme_file.close()
     Default_theme  = Theme('Family Friendly', [
                         "Attention students! Principal Butthead is at home recovering from ___. We hope he'll be back soon."
                         ,"Coming soon! Batman vs. ___"
@@ -129,6 +132,12 @@ if __name__ == "__main__":
             theme_list[-1].set_prompt()
             theme_list[-1].set_answers()  
             write_theme_file = open("newtheme.pickle", "wb") 
+            if Default_theme not in theme_list:
+                theme_list.append(Default_theme)
+                theme_name_list.append(Default_theme.theme_name)
+            for i in theme_list:
+                if i.theme_name != Default_theme.theme_name:
+                    theme_name_list.append(i.theme_name)
             pickle.dump(theme_list, write_theme_file)
             write_theme_file.close()
             print("New theme created. Exiting the game. Please rerun the program to play the game with recently added theme.")
@@ -197,15 +206,15 @@ def actual_game(pn,prompts,prompt_answers):
         y = y - 1
         print(copied_prompts[temp2])
         print()
-        time.sleep(5)
+        time.sleep(2)
         for g in range(0, pn):
             if g != e:
-                answer_choice = int(input("Player " + str(g+1) + ", pick which answer you would like to use for this prompt? (1 to 5): "))
                 print(players_hand[g])
+                answer_choice = int(input("Player " + str(g+1) + ", pick which answer you would like to use for this prompt? (1 to 5): "))
                 print()
                 print(copied_prompts[temp2].replace('___',' '+players_hand[g][answer_choice-1]+' '))
                 print()
-                time.sleep(5)
+                time.sleep(2)
                 temp_answers.append(players_hand[g][answer_choice-1])
                 del players_hand[g][answer_choice-1]
                 players_hand[g].append(copied_answers[randint(0,y-1)])
